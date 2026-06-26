@@ -503,15 +503,15 @@
         removeTypingIndicator();
 
         let reply;
-        if (data?.choices?.[0]?.message?.content) {
-          reply = data.choices[0].message.content;
-        } else if (data?.error) {
-          reply = `⚠️ API Error: ${data.error.message || JSON.stringify(data.error)}`;
-        } else if (data?.message) {
-          reply = `⚠️ Error: ${data.message}`;
-        } else {
-          reply = "⚠️ Unexpected response: " + JSON.stringify(data).slice(0, 200);
-        }
+if (data?.content?.[0]?.text) {
+  reply = data.content[0].text;
+} else if (data?.error) {
+  reply = `⚠️ API Error: ${data.error.message || JSON.stringify(data.error)}`;
+} else if (data?.message) {
+  reply = `⚠️ Error: ${data.message}`;
+} else {
+  reply = "⚠️ Unexpected response: " + JSON.stringify(data).slice(0, 200);
+}
 
         addMessage("assistant", reply);
         if (!reply.startsWith("⚠️")) {
