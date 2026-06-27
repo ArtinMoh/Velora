@@ -1,546 +1,418 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Chat</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Velora</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg:        #0D0C0A;
-      --surface:   #161512;
-      --surface2:  #1E1D19;
-      --border:    #2C2B26;
-      --beige:     #E4D5B7;
-      --beige-dim: #9E8E75;
-      --beige-acc: #C9B48A;
-      --text:      #D8CCB8;
-      --text-dim:  #7A7060;
+      --tan:        #8B7253;
+      --tan-dark:   #6E5A3F;
+      --tan-light:  #A08C6A;
+      --cream:      #EDEAE3;
+      --eye:        #1C1A17;
+      --text-dark:  #3D3228;
+      --text-mid:   #9A8B76;
+      --bubble:     #8B7253;
+      --bubble-txt: #F6F0E6;
     }
 
     html, body {
       height: 100%;
-      background: var(--bg);
-      color: var(--text);
+      background: var(--tan);
       font-family: 'Inter', sans-serif;
-      font-size: 15px;
-      line-height: 1.6;
       overflow: hidden;
     }
 
-    /* ── PASSWORD SCREEN ── */
-    #lock-screen {
-      position: fixed; inset: 0;
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      gap: 2rem;
-      background: var(--bg);
-      z-index: 100;
-      transition: opacity 0.6s ease, transform 0.6s ease;
-    }
-    #lock-screen.hidden {
-      opacity: 0;
-      transform: translateY(-16px);
-      pointer-events: none;
+    /* ── FRAME ── */
+    .frame {
+      max-width: 430px;
+      margin: 0 auto;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
     }
 
-    .lock-logo {
+    /* ── TITLE ── */
+    .title {
       font-family: 'Cormorant Garamond', serif;
-      font-size: 2.2rem;
       font-weight: 300;
-      letter-spacing: 0.12em;
-      color: var(--beige);
-    }
-    .lock-logo span {
-      color: var(--beige-dim);
-      font-style: italic;
+      font-size: 1.85rem;
+      letter-spacing: 0.42em;
+      color: #F5EDE0;
+      text-align: center;
+      padding: 22px 0 14px;
+      flex-shrink: 0;
+      text-shadow: 0 1px 12px rgba(0,0,0,0.18);
     }
 
-    .lock-box {
+    /* ── MASCOT ZONE ── */
+    .mascot-zone {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 0 18px;
+      overflow: hidden;
+      min-height: 0;
+    }
+
+    /* bumps */
+    .bumps {
+      display: flex;
+      justify-content: center;
+      gap: 28px;
+      flex-shrink: 0;
+      margin-bottom: -24px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .bump {
+      width: 72px;
+      height: 72px;
+      background: var(--cream);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow:
+        0 -6px 20px rgba(0,0,0,0.18),
+        inset 0 3px 10px rgba(0,0,0,0.07);
+    }
+
+    /* eyes */
+    .eye {
+      width: 26px;
+      height: 38px;
+      background: var(--eye);
+      border-radius: 50%;
+      transform-origin: center;
+    }
+    #eye-l { animation: blink 5.5s 0.5s  infinite; }
+    #eye-r { animation: blink 5.5s 1.25s infinite; }
+
+    @keyframes blink {
+      0%, 86%, 100% { transform: scaleY(1); }
+      90%           { transform: scaleY(0.06); }
+      94%           { transform: scaleY(1); }
+    }
+
+    .eye.thinking { animation: look 2s ease-in-out infinite !important; }
+    @keyframes look {
+      0%, 100% { transform: translateX(0)    scaleY(0.82); }
+      33%      { transform: translateX(-6px) scaleY(0.72); }
+      66%      { transform: translateX(6px)  scaleY(0.72); }
+    }
+
+    /* mascot body */
+    .body {
+      flex: 1;
+      background: var(--cream);
+      border-radius: 48px 48px 22px 22px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+      z-index: 1;
+      box-shadow: inset 0 10px 28px rgba(0,0,0,0.06);
+      min-height: 0;
+    }
+
+    /* ── LOCK PANEL ── */
+    #lock-panel {
+      flex: 1;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 1.4rem;
-      width: 100%;
-      max-width: 320px;
-      padding: 0 1.5rem;
+      justify-content: center;
+      gap: 14px;
+      padding: 40px 30px;
     }
 
     .lock-label {
-      font-size: 0.78rem;
-      letter-spacing: 0.14em;
+      font-size: 0.71rem;
+      letter-spacing: 0.2em;
       text-transform: uppercase;
-      color: var(--text-dim);
+      color: var(--text-mid);
     }
 
-    .input-wrap {
-      position: relative;
+    .pwd-input {
       width: 100%;
-    }
-    .input-wrap input {
-      width: 100%;
-      padding: 0.75rem 1rem;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      color: var(--beige);
-      font-family: 'Inter', sans-serif;
-      font-size: 0.95rem;
-      letter-spacing: 0.08em;
-      outline: none;
-      transition: border-color 0.25s;
+      padding: 0.72rem 1rem;
+      background: rgba(139,114,83,0.07);
+      border: 1px solid rgba(139,114,83,0.22);
+      border-radius: 10px;
+      color: var(--text-dark);
+      font-size: 1rem;
+      letter-spacing: 0.14em;
       text-align: center;
+      outline: none;
+      font-family: 'Inter', sans-serif;
+      transition: border-color 0.22s, box-shadow 0.22s;
     }
-    .input-wrap input:focus {
-      border-color: var(--beige-dim);
-    }
-    /* signature glow line */
-    .input-wrap::after {
-      content: '';
-      position: absolute;
-      bottom: -1px; left: 50%;
-      transform: translateX(-50%) scaleX(0);
-      width: 80%;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, var(--beige-acc), transparent);
-      transition: transform 0.35s ease;
-    }
-    .input-wrap:focus-within::after {
-      transform: translateX(-50%) scaleX(1);
+    .pwd-input:focus {
+      border-color: rgba(139,114,83,0.48);
+      box-shadow: 0 0 0 3px rgba(139,114,83,0.10);
     }
 
     .lock-error {
-      font-size: 0.78rem;
-      color: #b07a5a;
-      letter-spacing: 0.04em;
+      font-size: 0.73rem;
+      color: #C06040;
       height: 1rem;
-      transition: opacity 0.2s;
+      letter-spacing: 0.04em;
     }
 
-    .lock-btn {
-      width: 100%;
-      padding: 0.7rem;
-      background: transparent;
-      border: 1px solid var(--beige-dim);
-      border-radius: 6px;
-      color: var(--beige);
-      font-family: 'Inter', sans-serif;
-      font-size: 0.85rem;
-      letter-spacing: 0.12em;
+    .unlock-btn {
+      padding: 0.65rem 2.4rem;
+      background: var(--tan);
+      border: none;
+      border-radius: 10px;
+      color: #F5EDE0;
+      font-size: 0.78rem;
+      letter-spacing: 0.18em;
       text-transform: uppercase;
       cursor: pointer;
-      transition: background 0.2s, border-color 0.2s;
+      font-family: 'Inter', sans-serif;
+      transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
+      box-shadow: 0 4px 16px rgba(110,90,63,0.35);
     }
-    .lock-btn:hover {
-      background: var(--surface);
-      border-color: var(--beige);
-    }
+    .unlock-btn:hover  { background: var(--tan-dark); box-shadow: 0 6px 20px rgba(110,90,63,0.45); }
+    .unlock-btn:active { transform: scale(0.95); }
 
-    /* ── CHAT SCREEN ── */
-    #chat-screen {
-      display: none;
-      flex-direction: column;
-      height: 100%;
-    }
-    #chat-screen.visible {
-      display: flex;
-    }
-
-    /* Header */
-    .chat-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 1rem 1.5rem;
-      border-bottom: 1px solid var(--border);
-      background: var(--surface);
-      flex-shrink: 0;
-    }
-    .chat-header-title {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.2rem;
-      font-weight: 400;
-      letter-spacing: 0.08em;
-      color: var(--beige);
-    }
-    .chat-header-subtitle {
-      font-size: 0.72rem;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--text-dim);
-    }
-    .status-dot {
-      width: 7px; height: 7px;
-      border-radius: 50%;
-      background: #7aab7a;
-      box-shadow: 0 0 6px #7aab7a88;
-    }
-
-    /* Messages */
+    /* ── MESSAGES ── */
     .messages {
       flex: 1;
       overflow-y: auto;
-      padding: 1.5rem 1rem;
-      display: flex;
+      padding: 28px 18px 14px;
       flex-direction: column;
-      gap: 1.25rem;
-      scrollbar-width: thin;
-      scrollbar-color: var(--border) transparent;
+      gap: 10px;
+      scrollbar-width: none;
+      min-height: 0;
     }
-    .messages::-webkit-scrollbar { width: 4px; }
-    .messages::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+    .messages::-webkit-scrollbar { display: none; }
 
-    .msg-row {
-      display: flex;
-      gap: 0.75rem;
-      align-items: flex-start;
-      max-width: 760px;
-      width: 100%;
-      margin: 0 auto;
-    }
-    .msg-row.user { flex-direction: row-reverse; }
-
-    .avatar {
-      width: 30px; height: 30px;
-      border-radius: 50%;
-      flex-shrink: 0;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 0.7rem;
-      letter-spacing: 0.05em;
-      font-weight: 500;
-    }
-    .avatar.ai  { background: var(--surface2); border: 1px solid var(--border); color: var(--beige-dim); }
-    .avatar.usr { background: var(--beige-acc); color: var(--bg); }
+    .msg-row { display: flex; }
+    .msg-row.user { justify-content: flex-end; }
+    .msg-row.ai   { justify-content: flex-start; }
 
     .bubble {
-      padding: 0.7rem 1rem;
-      border-radius: 12px;
-      max-width: calc(100% - 50px);
-      font-size: 0.92rem;
-      line-height: 1.65;
+      max-width: 78%;
+      padding: 9px 15px;
+      border-radius: 18px;
+      font-size: 0.87rem;
+      line-height: 1.58;
+      background: var(--bubble);
+      color: var(--bubble-txt);
     }
-    .bubble.ai {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      color: var(--text);
-      border-top-left-radius: 4px;
+    .bubble.user { border-bottom-right-radius: 4px; }
+    .bubble.ai   { border-bottom-left-radius: 4px; }
+
+    /* thinking dots (square–circle–square like mockup) */
+    .tdots {
+      display: flex;
+      gap: 5px;
+      align-items: center;
+      padding: 10px 15px;
     }
-    .bubble.user {
-      background: var(--surface2);
-      border: 1px solid #2e2c27;
-      color: var(--beige);
-      border-top-right-radius: 4px;
+    .tdot {
+      width: 7px; height: 7px;
+      background: var(--bubble);
+      animation: dp 1.2s ease-in-out infinite;
+    }
+    .tdot:nth-child(1) { border-radius: 2px; }
+    .tdot:nth-child(2) { border-radius: 50%; animation-delay: 0.2s; }
+    .tdot:nth-child(3) { border-radius: 2px; animation-delay: 0.4s; }
+    @keyframes dp {
+      0%, 100% { opacity: 0.22; transform: scale(0.78); }
+      50%      { opacity: 1;    transform: scale(1);    }
     }
 
-    /* Typing indicator */
-    .typing-dots {
-      display: flex; gap: 4px; align-items: center; padding: 4px 2px;
-    }
-    .typing-dots span {
-      width: 6px; height: 6px;
-      border-radius: 50%;
-      background: var(--beige-dim);
-      animation: blink 1.2s infinite;
-    }
-    .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
-    .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
-    @keyframes blink {
-      0%, 80%, 100% { opacity: 0.2; transform: scale(0.85); }
-      40% { opacity: 1; transform: scale(1); }
-    }
-
-    /* Input area */
-    .input-area {
-      border-top: 1px solid var(--border);
-      background: var(--surface);
-      padding: 1rem 1.5rem;
+    /* ── INPUT BAR ── */
+    .input-bar {
+      display: none;
+      align-items: flex-end;
+      gap: 11px;
+      background: #141210;
+      margin: 8px 18px 14px;
+      padding: 11px 14px;
+      border-radius: 14px;
       flex-shrink: 0;
     }
-    .input-row {
-      display: flex;
-      gap: 0.75rem;
-      align-items: flex-end;
-      max-width: 760px;
-      margin: 0 auto;
-    }
-    .chat-input {
+    .input-bar.show { display: flex; }
+
+    .chat-ta {
       flex: 1;
-      padding: 0.65rem 0.9rem;
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      color: var(--text);
-      font-family: 'Inter', sans-serif;
-      font-size: 0.9rem;
-      line-height: 1.5;
-      resize: none;
-      min-height: 42px;
-      max-height: 160px;
+      background: transparent;
+      border: none;
       outline: none;
-      transition: border-color 0.2s;
-      overflow-y: auto;
+      color: #C8BFB0;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.87rem;
+      resize: none;
+      line-height: 1.5;
+      max-height: 120px;
+      padding: 2px 0;
     }
-    .chat-input:focus { border-color: var(--beige-dim); }
-    .chat-input::placeholder { color: var(--text-dim); }
+    .chat-ta::placeholder { color: #5C5248; }
 
     .send-btn {
-      width: 40px; height: 40px;
-      flex-shrink: 0;
-      background: var(--beige-acc);
+      width: 34px; height: 34px;
+      background: var(--tan);
       border: none;
       border-radius: 8px;
       cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
       transition: background 0.2s, transform 0.1s;
     }
-    .send-btn:hover  { background: var(--beige); }
-    .send-btn:active { transform: scale(0.93); }
-    .send-btn svg { width: 16px; height: 16px; fill: var(--bg); }
-    .send-btn:disabled { opacity: 0.4; cursor: not-allowed; }
-
-    .hint {
-      text-align: center;
-      font-size: 0.7rem;
-      color: var(--text-dim);
-      margin-top: 0.5rem;
-      letter-spacing: 0.04em;
-    }
-
-    /* Welcome message */
-    .welcome {
-      text-align: center;
-      padding: 3rem 1rem;
-      max-width: 420px;
-      margin: auto;
-      display: flex;
-      flex-direction: column;
-      gap: 0.75rem;
-    }
-    .welcome-title {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.9rem;
-      font-weight: 300;
-      color: var(--beige);
-      letter-spacing: 0.06em;
-    }
-    .welcome-sub {
-      font-size: 0.82rem;
-      color: var(--text-dim);
-      letter-spacing: 0.04em;
-      line-height: 1.7;
-    }
-
-    @media (max-width: 480px) {
-      .chat-header { padding: 0.8rem 1rem; }
-      .messages { padding: 1rem 0.75rem; }
-      .input-area { padding: 0.75rem 1rem; }
-    }
+    .send-btn:hover  { background: var(--tan-dark); }
+    .send-btn:active { transform: scale(0.9); }
+    .send-btn:disabled { opacity: 0.32; cursor: default; }
+    .send-btn svg { width: 15px; height: 15px; fill: #F5EDE0; }
   </style>
 </head>
 <body>
+<div class="frame">
 
-  <!-- PASSWORD SCREEN -->
-  <div id="lock-screen">
-    <div class="lock-logo">Chat<span>AI</span></div>
-    <div class="lock-box">
-      <div class="lock-label">Enter access code to continue</div>
-      <div class="input-wrap">
-        <input type="password" id="pwd-input" placeholder="••••••" autocomplete="off" />
+  <div class="title">V e l o r a</div>
+
+  <div class="mascot-zone">
+
+    <!-- bumps / eyes -->
+    <div class="bumps">
+      <div class="bump"><div class="eye" id="eye-l"></div></div>
+      <div class="bump"><div class="eye" id="eye-r"></div></div>
+    </div>
+
+    <!-- mascot body -->
+    <div class="body">
+
+      <!-- lock panel -->
+      <div id="lock-panel">
+        <div class="lock-label">Enter access code</div>
+        <input type="password" id="pwd" class="pwd-input" placeholder="••••••" autocomplete="off">
+        <div class="lock-error" id="lock-err"></div>
+        <button id="unlock-btn" class="unlock-btn">Continue</button>
       </div>
-      <div class="lock-error" id="lock-error"></div>
-      <button class="lock-btn" id="unlock-btn">Continue</button>
+
+      <!-- messages -->
+      <div class="messages" id="msgs" style="display:none;"></div>
+
     </div>
   </div>
 
-  <!-- CHAT SCREEN -->
-  <div id="chat-screen">
-    <div class="chat-header">
-      <div>
-        <div class="chat-header-title">ChatAI</div>
-        <div class="chat-header-subtitle">Powered by Claude</div>
-      </div>
-      <div class="status-dot"></div>
-    </div>
-
-    <div class="messages" id="messages">
-      <div class="welcome">
-        <div class="welcome-title">Good to have you here.</div>
-        <div class="welcome-sub">Ask me anything — I'm here to help.</div>
-      </div>
-    </div>
-
-    <div class="input-area">
-      <div class="input-row">
-        <textarea class="chat-input" id="chat-input" placeholder="Type a message…" rows="1"></textarea>
-        <button class="send-btn" id="send-btn">
-          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
-          </svg>
-        </button>
-      </div>
-      <div class="hint">Press Enter to send · Shift+Enter for new line</div>
-    </div>
+  <!-- input bar -->
+  <div class="input-bar" id="input-bar">
+    <textarea class="chat-ta" id="chat-ta" placeholder="Type Your Message..." rows="1"></textarea>
+    <button class="send-btn" id="send-btn" disabled>
+      <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+    </button>
   </div>
 
-  <script>
-    const WORKER_URL = "https://shrill-hall-b136.hmdrgemeniacc.workers.dev/";
-    const ACCESS_PASSWORD = "apple";
+</div>
+<script>
+  const WORKER = "https://shrill-hall-b136.hmdrgemeniacc.workers.dev/";
+  const PASS   = "apple";
 
-    // ── PASSWORD LOGIC ──
-    const lockScreen  = document.getElementById("lock-screen");
-    const chatScreen  = document.getElementById("chat-screen");
-    const pwdInput    = document.getElementById("pwd-input");
-    const unlockBtn   = document.getElementById("unlock-btn");
-    const lockError   = document.getElementById("lock-error");
+  const eyeL    = document.getElementById('eye-l');
+  const eyeR    = document.getElementById('eye-r');
+  const msgsEl  = document.getElementById('msgs');
+  const ta      = document.getElementById('chat-ta');
+  const sendBtn = document.getElementById('send-btn');
 
-    function tryUnlock() {
-      if (pwdInput.value.trim() === ACCESS_PASSWORD) {
-        lockScreen.classList.add("hidden");
-        setTimeout(() => {
-          lockScreen.style.display = "none";
-          chatScreen.classList.add("visible");
-          chatInput.focus();
-        }, 600);
-      } else {
-        lockError.textContent = "Incorrect code. Try again.";
-        pwdInput.value = "";
-        pwdInput.focus();
-        setTimeout(() => lockError.textContent = "", 2500);
-      }
+  /* ── UNLOCK ── */
+  function tryUnlock() {
+    if (document.getElementById('pwd').value.trim() === PASS) {
+      document.getElementById('lock-panel').style.display = 'none';
+      msgsEl.style.display = 'flex';
+      document.getElementById('input-bar').classList.add('show');
+      ta.focus();
+    } else {
+      const err = document.getElementById('lock-err');
+      err.textContent = 'Incorrect code.';
+      document.getElementById('pwd').value = '';
+      setTimeout(() => err.textContent = '', 2000);
     }
+  }
+  document.getElementById('unlock-btn').addEventListener('click', tryUnlock);
+  document.getElementById('pwd').addEventListener('keydown', e => { if (e.key === 'Enter') tryUnlock(); });
 
-    unlockBtn.addEventListener("click", tryUnlock);
-    pwdInput.addEventListener("keydown", e => { if (e.key === "Enter") tryUnlock(); });
+  /* ── EYES ── */
+  function setThinking(on) {
+    [eyeL, eyeR].forEach(e => on ? e.classList.add('thinking') : e.classList.remove('thinking'));
+  }
 
-    // ── CHAT LOGIC ──
-    const messagesEl = document.getElementById("messages");
-    const chatInput  = document.getElementById("chat-input");
-    const sendBtn    = document.getElementById("send-btn");
+  /* ── CHAT ── */
+  let history = [], busy = false;
 
-    let history = [];
-    let isTyping = false;
+  ta.addEventListener('input', () => {
+    sendBtn.disabled = !ta.value.trim() || busy;
+    ta.style.height = 'auto';
+    ta.style.height = Math.min(ta.scrollHeight, 120) + 'px';
+  });
 
-    function removeWelcome() {
-      const w = messagesEl.querySelector(".welcome");
-      if (w) w.remove();
+  function addBubble(role, text) {
+    const row = document.createElement('div');
+    row.className = 'msg-row ' + role;
+    const b = document.createElement('div');
+    b.className = 'bubble ' + role;
+    b.textContent = text;
+    row.appendChild(b);
+    msgsEl.appendChild(row);
+    msgsEl.scrollTop = msgsEl.scrollHeight;
+  }
+
+  function addThinking() {
+    const row = document.createElement('div');
+    row.className = 'msg-row ai'; row.id = 'tr';
+    row.innerHTML = '<div class="tdots"><div class="tdot"></div><div class="tdot"></div><div class="tdot"></div></div>';
+    msgsEl.appendChild(row);
+    msgsEl.scrollTop = msgsEl.scrollHeight;
+  }
+  function removeThinking() { const r = document.getElementById('tr'); if (r) r.remove(); }
+
+  async function send() {
+    const text = ta.value.trim();
+    if (!text || busy) return;
+    busy = true; sendBtn.disabled = true;
+    ta.value = ''; ta.style.height = 'auto';
+
+    addBubble('user', text);
+    history.push({ role: 'user', content: text });
+    addThinking(); setThinking(true);
+
+    try {
+      const res  = await fetch(WORKER, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-Access-Password': PASS },
+        body: JSON.stringify({ messages: history }),
+      });
+      const data = await res.json();
+      removeThinking(); setThinking(false);
+
+      let reply;
+      if (data?.content?.[0]?.text)  reply = data.content[0].text;
+      else if (data?.error?.message) reply = '⚠️ ' + data.error.message;
+      else                           reply = '⚠️ ' + JSON.stringify(data).slice(0, 160);
+
+      addBubble('ai', reply);
+      if (!reply.startsWith('⚠️')) history.push({ role: 'assistant', content: reply });
+    } catch {
+      removeThinking(); setThinking(false);
+      addBubble('ai', '⚠️ Connection error.');
     }
+    busy = false;
+    sendBtn.disabled = !ta.value.trim();
+    ta.focus();
+  }
 
-    function addMessage(role, text) {
-      removeWelcome();
-      const isUser = role === "user";
-      const row = document.createElement("div");
-      row.className = `msg-row ${isUser ? "user" : ""}`;
-
-      const avatar = document.createElement("div");
-      avatar.className = `avatar ${isUser ? "usr" : "ai"}`;
-      avatar.textContent = isUser ? "You" : "AI";
-
-      const bubble = document.createElement("div");
-      bubble.className = `bubble ${isUser ? "user" : "ai"}`;
-      bubble.textContent = text;
-
-      row.appendChild(avatar);
-      row.appendChild(bubble);
-      messagesEl.appendChild(row);
-      messagesEl.scrollTop = messagesEl.scrollHeight;
-      return bubble;
-    }
-
-    function addTypingIndicator() {
-      removeWelcome();
-      const row = document.createElement("div");
-      row.className = "msg-row";
-      row.id = "typing-row";
-
-      const avatar = document.createElement("div");
-      avatar.className = "avatar ai";
-      avatar.textContent = "AI";
-
-      const bubble = document.createElement("div");
-      bubble.className = "bubble ai";
-      bubble.innerHTML = `<div class="typing-dots"><span></span><span></span><span></span></div>`;
-
-      row.appendChild(avatar);
-      row.appendChild(bubble);
-      messagesEl.appendChild(row);
-      messagesEl.scrollTop = messagesEl.scrollHeight;
-    }
-
-    function removeTypingIndicator() {
-      const r = document.getElementById("typing-row");
-      if (r) r.remove();
-    }
-
-    async function sendMessage() {
-      const text = chatInput.value.trim();
-      if (!text || isTyping) return;
-
-      isTyping = true;
-      sendBtn.disabled = true;
-      chatInput.value = "";
-      chatInput.style.height = "auto";
-
-      addMessage("user", text);
-      history.push({ role: "user", content: text });
-      addTypingIndicator();
-
-      try {
-        const res = await fetch(WORKER_URL, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "X-Access-Password": ACCESS_PASSWORD,
-          },
-          body: JSON.stringify({ messages: history }),
-        });
-
-        const data = await res.json();
-        removeTypingIndicator();
-
-        let reply;
-if (data?.content?.[0]?.text) {
-  reply = data.content[0].text;
-} else if (data?.error) {
-  reply = `⚠️ API Error: ${data.error.message || JSON.stringify(data.error)}`;
-} else if (data?.message) {
-  reply = `⚠️ Error: ${data.message}`;
-} else {
-  reply = "⚠️ Unexpected response: " + JSON.stringify(data).slice(0, 200);
-}
-
-        addMessage("assistant", reply);
-        if (!reply.startsWith("⚠️")) {
-          history.push({ role: "assistant", content: reply });
-        }
-
-      } catch (err) {
-        removeTypingIndicator();
-        addMessage("assistant", "Connection error. Please try again.");
-      }
-
-      isTyping = false;
-      sendBtn.disabled = false;
-      chatInput.focus();
-    }
-
-    sendBtn.addEventListener("click", sendMessage);
-    chatInput.addEventListener("keydown", e => {
-      if (e.key === "Enter" && !e.shiftKey) {
-        e.preventDefault();
-        sendMessage();
-      }
-    });
-
-    // Auto-resize textarea
-    chatInput.addEventListener("input", () => {
-      chatInput.style.height = "auto";
-      chatInput.style.height = Math.min(chatInput.scrollHeight, 160) + "px";
-    });
-  </script>
+  sendBtn.addEventListener('click', send);
+  ta.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); } });
+</script>
 </body>
 </html>
