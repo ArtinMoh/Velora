@@ -4,32 +4,31 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Velora</title>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --tan:        #8B7253;
-      --tan-dark:   #6E5A3F;
-      --tan-light:  #A08C6A;
-      --cream:      #EDEAE3;
-      --eye:        #1C1A17;
-      --text-dark:  #3D3228;
-      --text-mid:   #9A8B76;
-      --bubble:     #8B7253;
-      --bubble-txt: #F6F0E6;
+      --tan:      #8B7253;
+      --tan-dk:   #6A5438;
+      --tan-lt:   #A08B69;
+      --cream-hi: #F7F4EE;
+      --cream:    #EDE9E1;
+      --cream-dk: #D9D4C9;
+      --eye-col:  #17140F;
+      --bubble:   #8B7253;
+      --bub-txt:  #F6EFE2;
     }
 
     html, body {
       height: 100%;
-      background: var(--tan);
-      font-family: 'Inter', sans-serif;
       overflow: hidden;
+      font-family: 'Inter', sans-serif;
+      background: radial-gradient(ellipse at 50% 0%, #A08460 0%, #8B7253 40%, #6A5438 100%);
     }
 
-    /* ── FRAME ── */
     .frame {
-      max-width: 430px;
+      max-width: 420px;
       margin: 0 auto;
       height: 100%;
       display: flex;
@@ -37,88 +36,129 @@
     }
 
     /* ── TITLE ── */
-    .title {
+    .velora-title {
       font-family: 'Cormorant Garamond', serif;
       font-weight: 300;
-      font-size: 1.85rem;
-      letter-spacing: 0.42em;
-      color: #F5EDE0;
+      font-size: 1.75rem;
+      letter-spacing: 0.46em;
+      color: #F8F0E0;
       text-align: center;
-      padding: 22px 0 14px;
+      padding: 20px 0 10px;
       flex-shrink: 0;
-      text-shadow: 0 1px 12px rgba(0,0,0,0.18);
+      text-shadow: 0 2px 18px rgba(0,0,0,0.28);
     }
 
-    /* ── MASCOT ZONE ── */
+    /* ── MASCOT ── */
     .mascot-zone {
       flex: 1;
       display: flex;
       flex-direction: column;
-      padding: 0 18px;
-      overflow: hidden;
+      padding: 0 16px;
       min-height: 0;
+      overflow: hidden;
     }
 
-    /* bumps */
-    .bumps {
+    /* bumps row — sits above body */
+    .bumps-row {
       display: flex;
       justify-content: center;
-      gap: 28px;
+      gap: 26px;
       flex-shrink: 0;
-      margin-bottom: -24px;
+      margin-bottom: -28px;
       position: relative;
-      z-index: 2;
+      z-index: 3;
     }
 
     .bump {
-      width: 72px;
-      height: 72px;
-      background: var(--cream);
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 36% 30%, var(--cream-hi) 0%, var(--cream) 50%, var(--cream-dk) 100%);
+      box-shadow:
+        0 -6px 22px rgba(0,0,0,0.22),
+        0  8px 18px rgba(0,0,0,0.20),
+        inset 0  5px 14px rgba(255,255,255,0.75),
+        inset 0 -5px 12px rgba(0,0,0,0.12);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* eye socket — subtle recess */
+    .eye-socket {
+      width: 38px;
+      height: 50px;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
+      background: radial-gradient(circle at 45% 40%, #2a261f 0%, var(--eye-col) 60%);
       box-shadow:
-        0 -6px 20px rgba(0,0,0,0.18),
-        inset 0 3px 10px rgba(0,0,0,0.07);
+        inset 0 3px 8px rgba(0,0,0,0.55),
+        inset 0 -2px 6px rgba(0,0,0,0.35),
+        0 2px 6px rgba(0,0,0,0.3);
+      position: relative;
+      overflow: visible;
     }
 
-    /* eyes */
-    .eye {
-      width: 26px;
-      height: 38px;
-      background: var(--eye);
-      border-radius: 50%;
-      transform-origin: center;
-    }
-    #eye-l { animation: blink 5.5s 0.5s  infinite; }
-    #eye-r { animation: blink 5.5s 1.25s infinite; }
+    /* blink: scale the socket vertically */
+    #sock-l { animation: blink 6s 0.6s  infinite; }
+    #sock-r { animation: blink 6s 1.45s infinite; }
 
     @keyframes blink {
-      0%, 86%, 100% { transform: scaleY(1); }
-      90%           { transform: scaleY(0.06); }
-      94%           { transform: scaleY(1); }
+      0%, 84%, 100% { transform: scaleY(1); }
+      88%            { transform: scaleY(0.04); }
+      92%            { transform: scaleY(1); }
     }
 
-    .eye.thinking { animation: look 2s ease-in-out infinite !important; }
-    @keyframes look {
-      0%, 100% { transform: translateX(0)    scaleY(0.82); }
-      33%      { transform: translateX(-6px) scaleY(0.72); }
-      66%      { transform: translateX(6px)  scaleY(0.72); }
+    .eye-socket.thinking { animation: think 2.2s ease-in-out infinite !important; }
+    @keyframes think {
+      0%, 100% { transform: translateX(0)    scaleY(0.78); }
+      35%      { transform: translateX(-7px) scaleY(0.68); }
+      70%      { transform: translateX(7px)  scaleY(0.68); }
+    }
+
+    /* eye shine */
+    .eye-socket::after {
+      content: '';
+      position: absolute;
+      top: 18%; left: 22%;
+      width: 30%; height: 22%;
+      background: rgba(255,255,255,0.48);
+      border-radius: 50%;
+      transform: rotate(-25deg);
+      pointer-events: none;
     }
 
     /* mascot body */
-    .body {
+    .mascot-body {
       flex: 1;
-      background: var(--cream);
-      border-radius: 48px 48px 22px 22px;
+      border-radius: 52px 52px 24px 24px;
+      background: linear-gradient(175deg, var(--cream-hi) 0%, var(--cream) 45%, var(--cream-dk) 100%);
+      box-shadow:
+        inset 0  14px 36px rgba(255,255,255,0.60),
+        inset 0 -10px 28px rgba(0,0,0,0.08),
+        inset 3px 0   20px rgba(255,255,255,0.25),
+        inset -3px 0  20px rgba(0,0,0,0.05),
+        0 24px 60px rgba(0,0,0,0.28),
+        0  6px 16px rgba(0,0,0,0.18);
       display: flex;
       flex-direction: column;
       overflow: hidden;
       position: relative;
-      z-index: 1;
-      box-shadow: inset 0 10px 28px rgba(0,0,0,0.06);
+      z-index: 2;
       min-height: 0;
+    }
+
+    /* rim highlight at very top of body */
+    .mascot-body::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 10%; right: 10%;
+      height: 1.5px;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.85), transparent);
+      border-radius: 50%;
+      z-index: 4;
     }
 
     /* ── LOCK PANEL ── */
@@ -128,59 +168,68 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 14px;
-      padding: 40px 30px;
+      gap: 16px;
+      padding: 48px 32px 40px;
     }
 
     .lock-label {
-      font-size: 0.71rem;
-      letter-spacing: 0.2em;
+      font-size: 0.68rem;
+      letter-spacing: 0.22em;
       text-transform: uppercase;
-      color: var(--text-mid);
+      color: #9A8B76;
     }
 
+    .pwd-wrap {
+      width: 100%;
+      position: relative;
+    }
     .pwd-input {
       width: 100%;
-      padding: 0.72rem 1rem;
-      background: rgba(139,114,83,0.07);
-      border: 1px solid rgba(139,114,83,0.22);
-      border-radius: 10px;
-      color: var(--text-dark);
+      padding: 0.8rem 1.1rem;
+      background: rgba(139,114,83,0.06);
+      border: 1px solid rgba(139,114,83,0.20);
+      border-radius: 12px;
+      color: #3D3228;
       font-size: 1rem;
-      letter-spacing: 0.14em;
+      letter-spacing: 0.15em;
       text-align: center;
       outline: none;
       font-family: 'Inter', sans-serif;
       transition: border-color 0.22s, box-shadow 0.22s;
+      box-shadow: inset 0 2px 6px rgba(0,0,0,0.06);
     }
     .pwd-input:focus {
-      border-color: rgba(139,114,83,0.48);
-      box-shadow: 0 0 0 3px rgba(139,114,83,0.10);
+      border-color: rgba(139,114,83,0.45);
+      box-shadow: inset 0 2px 8px rgba(0,0,0,0.07), 0 0 0 3px rgba(139,114,83,0.10);
     }
 
     .lock-error {
-      font-size: 0.73rem;
-      color: #C06040;
+      font-size: 0.72rem;
+      color: #B85C38;
       height: 1rem;
-      letter-spacing: 0.04em;
+      letter-spacing: 0.05em;
+      text-align: center;
     }
 
     .unlock-btn {
-      padding: 0.65rem 2.4rem;
-      background: var(--tan);
+      padding: 0.7rem 2.6rem;
+      background: linear-gradient(160deg, var(--tan-lt) 0%, var(--tan) 50%, var(--tan-dk) 100%);
       border: none;
-      border-radius: 10px;
+      border-radius: 12px;
       color: #F5EDE0;
-      font-size: 0.78rem;
-      letter-spacing: 0.18em;
+      font-size: 0.76rem;
+      letter-spacing: 0.2em;
       text-transform: uppercase;
       cursor: pointer;
       font-family: 'Inter', sans-serif;
-      transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
-      box-shadow: 0 4px 16px rgba(110,90,63,0.35);
+      box-shadow:
+        0 6px 22px rgba(110,84,56,0.40),
+        0 2px  6px rgba(0,0,0,0.18),
+        inset 0 1px 2px rgba(255,255,255,0.25);
+      transition: transform 0.15s, box-shadow 0.15s;
     }
-    .unlock-btn:hover  { background: var(--tan-dark); box-shadow: 0 6px 20px rgba(110,90,63,0.45); }
-    .unlock-btn:active { transform: scale(0.95); }
+    .unlock-btn:hover  { transform: translateY(-1px); box-shadow: 0 10px 28px rgba(110,84,56,0.50), 0 3px 8px rgba(0,0,0,0.22), inset 0 1px 2px rgba(255,255,255,0.25); }
+    .unlock-btn:active { transform: scale(0.96); }
 
     /* ── MESSAGES ── */
     .messages {
@@ -196,21 +245,21 @@
 
     .msg-row { display: flex; }
     .msg-row.user { justify-content: flex-end; }
-    .msg-row.ai   { justify-content: flex-start; }
 
     .bubble {
       max-width: 78%;
       padding: 9px 15px;
       border-radius: 18px;
-      font-size: 0.87rem;
+      font-size: 0.86rem;
       line-height: 1.58;
-      background: var(--bubble);
-      color: var(--bubble-txt);
+      background: linear-gradient(135deg, var(--tan-lt) 0%, var(--tan) 60%, var(--tan-dk) 100%);
+      color: var(--bub-txt);
+      box-shadow: 0 3px 12px rgba(0,0,0,0.16);
     }
     .bubble.user { border-bottom-right-radius: 4px; }
     .bubble.ai   { border-bottom-left-radius: 4px; }
 
-    /* thinking dots (square–circle–square like mockup) */
+    /* thinking dots */
     .tdots {
       display: flex;
       gap: 5px;
@@ -219,48 +268,58 @@
     }
     .tdot {
       width: 7px; height: 7px;
-      background: var(--bubble);
-      animation: dp 1.2s ease-in-out infinite;
+      background: var(--tan);
+      opacity: 0.7;
+      animation: dp 1.3s ease-in-out infinite;
     }
     .tdot:nth-child(1) { border-radius: 2px; }
-    .tdot:nth-child(2) { border-radius: 50%; animation-delay: 0.2s; }
-    .tdot:nth-child(3) { border-radius: 2px; animation-delay: 0.4s; }
+    .tdot:nth-child(2) { border-radius: 50%; animation-delay: 0.22s; }
+    .tdot:nth-child(3) { border-radius: 2px; animation-delay: 0.44s; }
     @keyframes dp {
-      0%, 100% { opacity: 0.22; transform: scale(0.78); }
-      50%      { opacity: 1;    transform: scale(1);    }
+      0%, 100% { opacity: 0.2; transform: scale(0.75); }
+      50%      { opacity: 0.9; transform: scale(1);    }
     }
 
     /* ── INPUT BAR ── */
     .input-bar {
       display: none;
-      align-items: flex-end;
-      gap: 11px;
-      background: #141210;
-      margin: 8px 18px 14px;
-      padding: 11px 14px;
+      align-items: center;
+      gap: 10px;
+      background: #131009;
+      margin: 8px 16px 14px;
+      padding: 0 14px;
+      height: 50px;
       border-radius: 14px;
       flex-shrink: 0;
+      box-shadow:
+        0 8px 28px rgba(0,0,0,0.35),
+        inset 0 1px 3px rgba(255,255,255,0.04);
     }
     .input-bar.show { display: flex; }
 
     .chat-ta {
       flex: 1;
+      height: 22px;
       background: transparent;
       border: none;
       outline: none;
       color: #C8BFB0;
       font-family: 'Inter', sans-serif;
-      font-size: 0.87rem;
+      font-size: 0.86rem;
       resize: none;
-      line-height: 1.5;
-      max-height: 120px;
-      padding: 2px 0;
+      line-height: 22px;
+      overflow: hidden;
+      padding: 0;
+      display: block;
     }
-    .chat-ta::placeholder { color: #5C5248; }
+    .chat-ta::placeholder {
+      color: #5A5248;
+      line-height: 22px;
+    }
 
     .send-btn {
-      width: 34px; height: 34px;
-      background: var(--tan);
+      width: 32px; height: 32px;
+      background: linear-gradient(145deg, var(--tan-lt), var(--tan-dk));
       border: none;
       border-radius: 8px;
       cursor: pointer;
@@ -268,47 +327,49 @@
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
-      transition: background 0.2s, transform 0.1s;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.3), inset 0 1px 2px rgba(255,255,255,0.2);
+      transition: transform 0.12s, box-shadow 0.12s;
     }
-    .send-btn:hover  { background: var(--tan-dark); }
-    .send-btn:active { transform: scale(0.9); }
-    .send-btn:disabled { opacity: 0.32; cursor: default; }
-    .send-btn svg { width: 15px; height: 15px; fill: #F5EDE0; }
+    .send-btn:hover  { transform: scale(1.06); box-shadow: 0 5px 14px rgba(0,0,0,0.35); }
+    .send-btn:active { transform: scale(0.92); }
+    .send-btn:disabled { opacity: 0.28; cursor: default; transform: none; }
+    .send-btn svg { width: 14px; height: 14px; fill: #F5EDE0; }
   </style>
 </head>
 <body>
 <div class="frame">
 
-  <div class="title">V e l o r a</div>
+  <div class="velora-title">V e l o r a</div>
 
   <div class="mascot-zone">
 
-    <!-- bumps / eyes -->
-    <div class="bumps">
-      <div class="bump"><div class="eye" id="eye-l"></div></div>
-      <div class="bump"><div class="eye" id="eye-r"></div></div>
+    <div class="bumps-row">
+      <div class="bump">
+        <div class="eye-socket" id="sock-l"></div>
+      </div>
+      <div class="bump">
+        <div class="eye-socket" id="sock-r"></div>
+      </div>
     </div>
 
-    <!-- mascot body -->
-    <div class="body">
+    <div class="mascot-body">
 
-      <!-- lock panel -->
       <div id="lock-panel">
         <div class="lock-label">Enter access code</div>
-        <input type="password" id="pwd" class="pwd-input" placeholder="••••••" autocomplete="off">
+        <div class="pwd-wrap">
+          <input type="password" id="pwd" class="pwd-input" placeholder="••••••" autocomplete="off">
+        </div>
         <div class="lock-error" id="lock-err"></div>
         <button id="unlock-btn" class="unlock-btn">Continue</button>
       </div>
 
-      <!-- messages -->
       <div class="messages" id="msgs" style="display:none;"></div>
 
     </div>
   </div>
 
-  <!-- input bar -->
   <div class="input-bar" id="input-bar">
-    <textarea class="chat-ta" id="chat-ta" placeholder="Type Your Message..." rows="1"></textarea>
+    <textarea class="chat-ta" id="chat-ta" placeholder="Type your message…" rows="1"></textarea>
     <button class="send-btn" id="send-btn" disabled>
       <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
     </button>
@@ -319,8 +380,8 @@
   const WORKER = "https://shrill-hall-b136.hmdrgemeniacc.workers.dev/";
   const PASS   = "apple";
 
-  const eyeL    = document.getElementById('eye-l');
-  const eyeR    = document.getElementById('eye-r');
+  const sockL   = document.getElementById('sock-l');
+  const sockR   = document.getElementById('sock-r');
   const msgsEl  = document.getElementById('msgs');
   const ta      = document.getElementById('chat-ta');
   const sendBtn = document.getElementById('send-btn');
@@ -336,7 +397,7 @@
       const err = document.getElementById('lock-err');
       err.textContent = 'Incorrect code.';
       document.getElementById('pwd').value = '';
-      setTimeout(() => err.textContent = '', 2000);
+      setTimeout(() => err.textContent = '', 2200);
     }
   }
   document.getElementById('unlock-btn').addEventListener('click', tryUnlock);
@@ -344,17 +405,23 @@
 
   /* ── EYES ── */
   function setThinking(on) {
-    [eyeL, eyeR].forEach(e => on ? e.classList.add('thinking') : e.classList.remove('thinking'));
+    [sockL, sockR].forEach(s => on ? s.classList.add('thinking') : s.classList.remove('thinking'));
   }
 
-  /* ── CHAT ── */
-  let history = [], busy = false;
-
+  /* ── TEXTAREA auto-resize ── */
   ta.addEventListener('input', () => {
     sendBtn.disabled = !ta.value.trim() || busy;
     ta.style.height = 'auto';
-    ta.style.height = Math.min(ta.scrollHeight, 120) + 'px';
+    const h = Math.min(ta.scrollHeight, 110);
+    ta.style.height = h + 'px';
+    ta.style.lineHeight = ta.scrollHeight <= 30 ? '22px' : '1.5';
+    document.getElementById('input-bar').style.height = h > 30 ? 'auto' : '50px';
+    document.getElementById('input-bar').style.padding = h > 30 ? '14px' : '0 14px';
+    document.getElementById('input-bar').style.alignItems = h > 30 ? 'flex-end' : 'center';
   });
+
+  /* ── CHAT ── */
+  let history = [], busy = false;
 
   function addBubble(role, text) {
     const row = document.createElement('div');
@@ -380,7 +447,12 @@
     const text = ta.value.trim();
     if (!text || busy) return;
     busy = true; sendBtn.disabled = true;
-    ta.value = ''; ta.style.height = 'auto';
+    ta.value = '';
+    ta.style.height = 'auto';
+    ta.style.lineHeight = '22px';
+    document.getElementById('input-bar').style.height = '50px';
+    document.getElementById('input-bar').style.padding = '0 14px';
+    document.getElementById('input-bar').style.alignItems = 'center';
 
     addBubble('user', text);
     history.push({ role: 'user', content: text });
