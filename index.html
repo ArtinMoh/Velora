@@ -39,14 +39,24 @@
       background-size: 20px 20px;
       image-rendering: pixelated;
     }
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
 
     .frame {
       max-width: 420px;
-      margin: 0 auto;
-      height: 88%;
+      width: 100%;
+      height: 58vh;
       display: flex;
       flex-direction: column;
       padding: 0 2px;
+      overflow: hidden;
+      transition: height 0.55s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .frame.expanded {
+      height: 88vh;
     }
 
     /* ── TITLE ── */
@@ -486,6 +496,7 @@
       document.getElementById('lock-panel').style.display = 'none';
       msgsEl.style.display = 'flex';
       inputBar.classList.add('show');
+      document.querySelector('.frame').classList.add('expanded');
       ta.focus();
     } else {
       const err = document.getElementById('lock-err');
